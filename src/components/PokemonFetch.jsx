@@ -28,14 +28,31 @@ const PokemonFetch = () => {
   useEffect(() => {
     const fetchAllPokemon = async () => {
       try {
-        // Fetch initial list of Pokémon
-        // Sequentially fetch details for each Pokémon
-        // Update the state with the detailed Pokémon data
+        const response = await fetch(
+          "https://pokeapi.co/api/v2/pokemon?limit=10"
+        );
+
+        console.log(!response.ok);
+
+        if (!response.ok) {
+          throw new Error("Error ja");
+        }
+        const data = await response.json();
+        console.log(data);
+        const holdPokemon = [];
+        for (const pokemon of data.results) {
+          const pokemonInfo = await fetch(pokemon.url);
+          const dataInfo = await pokemonInfo.json();
+          holdPokemon.push(dataInfo);
+        }
+        console.log(holdPokemon);
+        setPokemonList(holdPokemon);
       } catch (error) {
         console.error("Failed to fetch Pokémon:", error);
       }
     };
     // invoke function
+    fetchAllPokemon();
   }, []);
 
   return (
